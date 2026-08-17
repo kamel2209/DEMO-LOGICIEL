@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>ProPlomb Marseille — Demande d'avis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F2530;
+    --marine:#123B52;
+    --marine-deep:#0A2536;
+    --steel-bg:#EAF0F2;
+    --paper:#FFFFFF;
+    --brass:#C98A2C;
+    --brass-deep:#A6701E;
+    --ok:#2F7A4D;
+    --line:#D6E0E3;
+    --text-soft:#4A5C63;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--steel-bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .topband{
+    width:100%;
+    background:linear-gradient(135deg,var(--marine-deep),var(--marine) 70%);
+    padding:22px 20px 34px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .topband::after{
+    content:"";
+    position:absolute; right:-40px; top:-40px;
+    width:160px;height:160px;border-radius:50%;
+    background:radial-gradient(circle,rgba(201,138,44,0.35),transparent 70%);
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600; font-size:15px;
+    letter-spacing:.02em;
+    opacity:.9;
+  }
+  .wrench{width:20px;height:20px;flex:none;}
+  .headline{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1.25;
+    margin-top:16px;
+    max-width:340px;
+  }
+  .headline em{color:var(--brass);font-style:normal;}
+
+  .slip{
+    width:100%;
+    max-width:440px;
+    background:var(--paper);
+    margin:-20px 16px 24px;
+    border-radius:16px;
+    box-shadow:0 12px 30px -14px rgba(10,37,54,0.35);
+    padding:22px 20px 24px;
+    position:relative;
+    z-index:2;
+  }
+  .slip-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-soft);
+    display:flex; justify-content:space-between;
+    padding-bottom:12px;
+    margin-bottom:16px;
+    border-bottom:1px dashed var(--line);
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--marine-deep);
+    margin:16px 0 6px;
+  }
+  input{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:17px;
+    padding:13px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFCFC;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  input:focus{border-color:var(--brass); background:#fff;}
+  .hint{font-size:12px;color:var(--text-soft);margin-top:6px;}
+
+  .channels{display:flex;gap:10px;margin-top:16px;}
+  .chip{
+    flex:1;
+    text-align:center;
+    padding:10px 8px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-soft);
+  }
+  .chip.active{border-color:var(--ok);color:var(--ok);background:#EFF8F2;}
+
+  button.send{
+    width:100%;
+    margin-top:22px;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:var(--brass);
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:.01em;
+    cursor:pointer;
+    transition:transform .08s ease, background .15s ease;
+  }
+  button.send:active{transform:scale(0.98);}
+  button.send:disabled{background:#C9C2B4;cursor:default;}
+
+  .status{
+    max-width:440px;
+    width:100%;
+    padding:0 16px;
+    margin-top:-4px;
+  }
+  .toast{
+    display:none;
+    border-radius:12px;
+    padding:16px 18px;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .toast.show{display:block;}
+  .toast.ok{background:#EFF8F2;border:1px solid #BFE3CC;color:#1E5A38;}
+  .toast.err{background:#FBEAEA;border:1px solid #EFC3C3;color:#8C2E2E;}
+  .toast b{font-family:'Space Grotesk',sans-serif;}
+
+  footer{
+    margin-top:auto;
+    padding:20px;
+    font-size:11px;
+    color:var(--text-soft);
+    text-align:center;
+  }
+  a.dashlink{color:var(--marine);text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+
+  <div class="topband">
+    <div class="brand">
+      <svg class="wrench" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2 2.6-2.6z" stroke="#C98A2C" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      ProPlomb Marseille
+    </div>
+    <div class="headline">Intervention terminée ?<br><em>Demandez l'avis</em> en 15 secondes.</div>
+  </div>
+
+  <form class="slip" id="reviewForm">
+    <div class="slip-tag"><span>BON D'INTERVENTION</span><span id="today"></span></div>
+
+    <label for="firstName">Prénom du client</label>
+    <input id="firstName" name="firstName" type="text" placeholder="ex. Marc" autocomplete="off" required>
+
+    <label for="phone">Téléphone (SMS)</label>
+    <input id="phone" name="phone" type="tel" placeholder="06 12 34 56 78" autocomplete="off">
+
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" placeholder="marc@exemple.fr" autocomplete="off">
+    <div class="hint">Renseignez au moins un des deux — le message part sur les deux canaux si vous les remplissez.</div>
+
+    <div class="channels">
+      <div class="chip" id="chipSms">📱 SMS</div>
+      <div class="chip" id="chipEmail">✉️ Email</div>
+    </div>
+
+    <button class="send" type="submit" id="sendBtn">Envoyer la demande d'avis</button>
+  </form>
+
+  <div class="status">
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <footer>
+    Envoi conforme RGPD — un lien de désinscription est inclus dans chaque message.<br>
+    <a class="dashlink" href="/dashboard">Voir le tableau de bord →</a>
+  </footer>
+
+<script>
+document.getElementById('today').textContent = new Date().toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'});
+
+const phone = document.getElementById('phone');
+const email = document.getElementById('email');
+const chipSms = document.getElementById('chipSms');
+const chipEmail = document.getElementById('chipEmail');
+
+function refreshChips(){
+  chipSms.classList.toggle('active', phone.value.trim().length > 3);
+  chipEmail.classList.toggle('active', email.value.includes('@'));
+}
+phone.addEventListener('input', refreshChips);
+email.addEventListener('input', refreshChips);
+
+const form = document.getElementById('reviewForm');
+const toast = document.getElementById('toast');
+const sendBtn = document.getElementById('sendBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const customerFirstName = document.getElementById('firstName').value.trim();
+  const phoneVal = phone.value.trim();
+  const emailVal = email.value.trim();
+
+  if(!customerFirstName || (!phoneVal && !emailVal)){
+    toast.textContent = "Merci de renseigner le prénom du client et au moins un moyen de contact.";
+    toast.className = 'toast show err';
+    return;
+  }
+
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Envoi en cours…";
+
+  try {
+    const res = await fetch('/api/request-review', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ customerFirstName, phone: phoneVal || null, email: emailVal || null })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || "Erreur");
+
+    toast.innerHTML = `<b>Demande envoyée ✅</b><br>${customerFirstName} va recevoir le lien d'avis Google par ${data.results.map(r=>r.channel==='sms'?'SMS':'email').join(' + ')}.`;
+    toast.className = 'toast show ok';
+    form.reset();
+    refreshChips();
+  } catch(err){
+    toast.textContent = "Erreur d'envoi : " + err.message;
+    toast.className = 'toast show err';
+  } finally {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Envoyer la demande d'avis";
+  }
+});
+</script>
+</body>
+</html>
