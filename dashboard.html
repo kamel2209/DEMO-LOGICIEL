@@ -205,7 +205,7 @@ async function validate(id){
 
 function renderPublished(reviews){
   const el = document.getElementById('publishedList');
-  if(!reviews.length){ el.innerHTML = '<div class="empty">Aucune réponse publiée pour l\\'instant.</div>'; return; }
+  if(!reviews.length){ el.innerHTML = "<div class=\"empty\">Aucune réponse publiée pour l'instant.</div>"; return; }
   el.innerHTML = reviews.map(r => `
     <div class="review-card">
       <div class="review-top">
