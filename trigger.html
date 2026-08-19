@@ -138,6 +138,22 @@
   button.send:active{transform:scale(0.98);}
   button.send:disabled{background:#C9C2B4;cursor:default;}
 
+  a.qr-link{
+    display:block;
+    max-width:440px;
+    width:calc(100% - 32px);
+    margin:14px auto 0;
+    text-align:center;
+    padding:14px;
+    border-radius:12px;
+    border:1.5px dashed var(--marine);
+    color:var(--marine-deep);
+    font-weight:600;
+    font-size:14.5px;
+    text-decoration:none;
+    background:#fff;
+  }
+
   .status{
     max-width:440px;
     width:100%;
@@ -196,6 +212,8 @@
 
     <button class="send" type="submit" id="sendBtn">Envoyer la demande d'avis</button>
   </form>
+
+  <a href="/" class="qr-link">📱 Ou montrer le QR code au client (recommandé)</a>
 
   <div class="status">
     <div class="toast" id="toast"></div>
