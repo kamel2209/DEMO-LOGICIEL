@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Laissez-nous un avis Google</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --marine:#123B52; --marine-deep:#0A2536; --brass:#C98A2C; --text-soft:#4A5C63;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{
+    background:linear-gradient(160deg,var(--marine-deep),var(--marine) 80%);
+    color:#fff;
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:32px 20px;
+  }
+  .stars{ font-size:34px; letter-spacing:6px; color:var(--brass); margin-bottom:6px; }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:26px; font-weight:700; margin:0 0 6px; max-width:420px;
+  }
+  p.sub{ font-size:15px; color:#CFE0E8; margin:0 0 28px; max-width:360px; line-height:1.5; }
+  .qr-card{
+    background:#fff; border-radius:20px; padding:20px;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,0.5);
+  }
+  .qr-card img{ display:block; width:260px; height:260px; }
+  .biz{ margin-top:22px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; }
+  .hint{ margin-top:6px; font-size:13px; color:#B9CBD4; }
+  .back{ margin-top:36px; color:#fff; opacity:.75; text-decoration:none; font-size:13px; font-weight:600; }
+  .loading{ font-size:15px; color:#CFE0E8; }
+</style>
+</head>
+<body>
+  <div id="content" class="loading">Chargement…</div>
+
+<script>
+async function load(){
+  try {
+    const res = await fetch('/api/qr-info');
+    const data = await res.json();
+    const encodedLink = encodeURIComponent(data.google_review_link);
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedLink}`;
+
+    document.getElementById('content').outerHTML = `
+      <div class="stars">★★★★★</div>
+      <h1>Votre avis compte beaucoup pour nous !</h1>
+      <p class="sub">Scannez ce code avec l'appareil photo de votre téléphone — ça prend 30 secondes.</p>
+      <div class="qr-card">
+        <img src="${qrUrl}" alt="QR code avis Google">
+      </div>
+      <div class="biz">${data.business_name}</div>
+      <div class="hint">Merci beaucoup 🙏</div>
+      <a class="back" href="/sms">Client déjà parti ? Envoyer un lien par SMS/email →</a>
+    `;
+  } catch(e) {
+    document.getElementById('content').textContent = "Impossible de charger le QR code. Vérifiez votre connexion.";
+  }
+}
+load();
+</script>
+</body>
+</html>
