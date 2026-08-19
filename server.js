@@ -12,8 +12,10 @@ const DEMO_CLIENT_ID = 'demo-proplomb';
 db.ensureDemoClient();
 
 // ---------- Pages ----------
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'trigger.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'qr.html')));
+app.get('/sms', (req, res) => res.sendFile(path.join(__dirname, 'trigger.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+app.get('/qr', (req, res) => res.sendFile(path.join(__dirname, 'qr.html')));
 
 // ---------- API : déclenchement d'une demande d'avis (artisan sur le terrain) ----------
 app.post('/api/request-review', async (req, res) => {
@@ -87,6 +89,13 @@ app.post('/api/reviews/:id/validate', (req, res) => {
 
   db.validateReview(req.params.id, finalText);
   res.json({ ok: true });
+});
+
+// ---------- API : infos pour la page QR code (lien d'avis + nom entreprise) ----------
+app.get('/api/qr-info', (req, res) => {
+  const client = db.getClient(DEMO_CLIENT_ID);
+  if (!client) return res.status(404).json({ error: 'Client introuvable.' });
+  res.json({ google_review_link: client.google_review_link, business_name: client.business_name });
 });
 
 // ---------- API : données du tableau de bord ----------
